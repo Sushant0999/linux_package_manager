@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Omnipack
+GenericName=Universal Linux App Manager
+Comment=Install, manage, and remove applications from URLs, archives, AppImages, and system repositories
+Exec=omnipack
+Icon=omnipack
+Terminal=false
+Categories=System;PackageManager;Utility;
+Keywords=package;manager;install;apt;pacman;flatpak;appimage;archive;
+StartupNotify=true
+StartupWMClass=omnipack
+MimeType=application/x-tar;application/zip;application/x-bzip2;application/x-xz;application/vnd.appimage;

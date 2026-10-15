@@ -1,0 +1,77 @@
+# Maintainer: Sushant Raj <sushant0999@github.com>
+pkgname=omnipack
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Universal Linux application manager — install from URLs, archives, AppImages, and system repositories"
+arch=('x86_64')
+url="https://github.com/Sushant0999/linux_package_manager"
+license=('MIT')
+depends=(
+    'webkit2gtk-4.1'
+    'gtk3'
+    'glib2'
+)
+makedepends=(
+    'go>=1.22'
+    'npm'
+    'gcc'
+    'pkgconf'
+)
+optdepends=(
+    'flatpak: support for Flatpak package management'
+    'snapd: support for Snap packages'
+    'xdg-utils: desktop integration utilities'
+)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/Sushant0999/linux_package_manager/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+# If building from local source during development, comment above and use:
+# source=("$pkgname::git+file:///path/to/your/omnipack")
+
+prepare() {
+    cd "$pkgname-$pkgver"
+    export GOFLAGS="-mod=mod"
+    go mod download
+}
+
+build() {
+    cd "$pkgname-$pkgver"
+
+    export PATH="$PATH:$(go env GOPATH)/bin"
+    export CGO_ENABLED=1
+
+    # Install wails CLI if not already present
+    if ! command -v wails &>/dev/null; then
+        go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+    fi
+
+    # Build the frontend + Go binary
+    wails build -tags webkit2_41 -o "$pkgname"
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+
+    # Binary
+    install -Dm755 "build/bin/$pkgname" "$pkgdir/usr/bin/$pkgname"
+
+    # Desktop entry
+    install -Dm644 "dist/$pkgname.desktop" \
+        "$pkgdir/usr/share/applications/$pkgname.desktop"
+
+    # Icons (multiple sizes)
+    for size in 16 24 32 48 64 128 256 512; do
+        install -Dm644 "dist/icons/$pkgname.png" \
+            "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/$pkgname.png"
+    done
+
+    # Fallback pixmap
+    install -Dm644 "dist/icons/$pkgname.png" \
+        "$pkgdir/usr/share/pixmaps/$pkgname.png"
+
+    # License
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
+
+    # Man page placeholder
+    # install -Dm644 "dist/man/omnipack.1" "$pkgdir/usr/share/man/man1/omnipack.1"
+}
