@@ -88,8 +88,8 @@ jobs:
       - name: Build AppImage
         run: |
           export APPIMAGE_EXTRACT_AND_RUN=1
-          wget -q https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage \
-            -O appimagetool-x86_64.AppImage
+          curl -fsSL "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" \
+            -o appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           bash dist/build_appimage.sh ${{ steps.version.outputs.VERSION }}
 

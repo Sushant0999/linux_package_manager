@@ -27,8 +27,8 @@ fi
 APPIMAGETOOL="./appimagetool-x86_64.AppImage"
 if [ ! -f "$APPIMAGETOOL" ]; then
     echo "==> Downloading appimagetool..."
-    wget -q "https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage" \
-        -O "$APPIMAGETOOL"
+    curl -fsSL "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" \
+        -o "$APPIMAGETOOL"
     chmod +x "$APPIMAGETOOL"
 fi
 
