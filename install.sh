@@ -7,7 +7,7 @@
 set -euo pipefail
 
 PKGNAME="omnipack"
-REPO="yourusername/omnipack"
+REPO="${REPO:-Sushant0999/linux_package_manager}"
 VERSION="${VERSION:-latest}"
 PREFIX="${PREFIX:-$HOME/.local}"
 BINDIR="$PREFIX/bin"

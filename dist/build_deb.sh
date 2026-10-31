@@ -14,14 +14,16 @@ PKG_ROOT="$DEB_DIR/${PKGNAME}_${VERSION}_${ARCH}"
 
 echo "==> Building .deb package: ${PKGNAME}_${VERSION}_${ARCH}.deb"
 
-# --- 1. Build the binary first ---
+# --- 1. Build the binary first (if not already built) ---
 export PATH="$PATH:$(go env GOPATH)/bin"
-if ! command -v wails &>/dev/null; then
-    echo "==> Installing Wails CLI..."
-    go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+if [ ! -f "build/bin/$PKGNAME" ]; then
+    if ! command -v wails &>/dev/null; then
+        echo "==> Installing Wails CLI..."
+        go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+    fi
+    echo "==> Compiling Omnipack..."
+    wails build -tags webkit2_41 -o "$PKGNAME"
 fi
-echo "==> Compiling Omnipack..."
-wails build -tags webkit2_41 -o "$PKGNAME"
 
 # --- 2. Create Debian package directory structure ---
 mkdir -p "$PKG_ROOT/DEBIAN"

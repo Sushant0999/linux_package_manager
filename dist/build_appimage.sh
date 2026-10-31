@@ -12,12 +12,16 @@ ARCH="x86_64"
 
 echo "==> Building AppImage for $PKGNAME v$VERSION"
 
-# --- 1. Build the binary ---
+# --- 1. Build the binary (if not already built) ---
 export PATH="$PATH:$(go env GOPATH)/bin"
-if ! command -v wails &>/dev/null; then
-    go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+export APPIMAGE_EXTRACT_AND_RUN="${APPIMAGE_EXTRACT_AND_RUN:-1}"
+if [ ! -f "build/bin/$PKGNAME" ]; then
+    if ! command -v wails &>/dev/null; then
+        echo "==> Installing Wails CLI..."
+        go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+    fi
+    wails build -tags webkit2_41 -o "$PKGNAME"
 fi
-wails build -tags webkit2_41 -o "$PKGNAME"
 
 # --- 2. Download appimagetool if not present ---
 APPIMAGETOOL="./appimagetool-x86_64.AppImage"
