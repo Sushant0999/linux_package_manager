@@ -56,11 +56,12 @@ export PATH="$HERE/usr/bin:$PATH"
 export LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"
 exec "$HERE/usr/bin/omnipack" "$@"
 EOF
-chmod +x "$APPDIR/AppRun"
+chmod 755 "$APPDIR/AppRun"
+chmod -R a+rX "$APPDIR"
 
 # --- 5. Build the AppImage ---
 OUT_APPIMAGE="${PKGNAME}-${VERSION}-${ARCH}.AppImage"
-ARCH=$ARCH "$APPIMAGETOOL" "$APPDIR" "$OUT_APPIMAGE"
+ARCH=$ARCH "$APPIMAGETOOL" --no-check-permissions "$APPDIR" "$OUT_APPIMAGE"
 rm -rf "$APPDIR"
 
 chmod +x "$OUT_APPIMAGE"
